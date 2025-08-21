@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安装CNCEB Root CA根证书</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    font-weight: 300;
+}
+
+.header p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+}
+
+.content {
+    flex: 1;
+    padding: 60px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 30px;
+    grid-template-areas: 
+        "windows linux"
+        "android linux";
+}
+
+.os-section {
+    margin-bottom: 0;
+    padding: 35px;
+    border-radius: 12px;
+    background: #f8f9fa;
+    border-left: 6px solid #667eea;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(102, 126, 234, 0.15);
+    transition: all 0.3s ease;
+}
+
+.windows-section {
+    grid-area: windows;
+}
+
+.linux-section {
+    grid-area: linux;
+    grid-row: 1 / 3;
+}
+
+.android-section {
+    grid-area: android;
+}
+
+.os-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 6px 15px rgba(102, 126, 234, 0.2);
+}
+
+.os-section h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.os-section h3 {
+    color: #555;
+    margin: 25px 0 15px 0;
+    font-size: 1.4rem;
+}
+
+.icon {
+    margin-right: 15px;
+    font-size: 2rem;
+}
+
+button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    margin: 15px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.download-link {
+    text-decoration: none;
+}
+
+.command-box {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 25px 80px 25px 25px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    margin: 20px 0;
+    position: relative;
+    overflow-x: auto;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.command-box::before {
+    content: "$ ";
+    color: #68d391;
+    font-weight: bold;
+}
+
+.copy-hint {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.copy-btn {
+    position: absolute;
+    right: 15px;
+    top: 35%;
+    transform: translateY(-50%);
+    background: #4a5568;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    z-index: 1;
+}
+
+.copy-btn:hover {
+    background: #2d3748;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.copy-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.note {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 40px;
+    color: #856404;
+    font-size: 1.1rem;
+    grid-column: 1 / -1;
+}
+
+.note::before {
+    content: "⚠️ ";
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 40px 20px;
+    }
+    
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .header p {
+        font-size: 1.1rem;
+    }
+    
+    .content {
+        padding: 40px 20px;
+        display: block;
+    }
+    
+    .os-section {
+        padding: 25px 20px;
+        margin-bottom: 30px;
+    }
+    
+    .os-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+    
+    button {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+    
+    .command-box {
+        padding: 20px;
+        font-size: 14px;
+    }
+    
+    .note {
+        margin-top: 0;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><strong>安装CNCEB Root CA根证书</strong></h1>
+        <p><strong>中云易冰根CA证书用于内部提升安全性，请在确认来源可信后安装。因错误使用或信任中云易冰根CA证书导致的任何损失，责任由用户自行承担。</strong></p>
+    </div>
+    
+    <div class="content">
+        <div class="os-section windows-section">
+            <h2><span class="icon">🪟</span>Windows</h2>
+            <a href="win.ps1" download class="download-link">
+                <button>下载并运行 PowerShell 脚本</button>
+            </a>
+        </div>
+
+        <div class="os-section linux-section">
+            <h2><span class="icon">🐧</span>Linux</h2>
+            <a href="linux.sh" download class="download-link">
+                <button>下载并运行 Shell 脚本</button>
+            </a>
+            
+            <h3>命令行快速安装</h3>
+            <p>复制以下命令到终端运行：</p>
+            <div style="position: relative;">
+                <div class="command-box">curl -sSL https://ca.ebcn.tech/linux.sh | sudo bash</div>
+                <button class="copy-btn" onclick="copyCommand()">📋 复制</button>
+            </div>
+        </div>
+
+        <div class="os-section android-section">
+            <h2><span class="icon">📱</span>Android / 其他设备</h2>
+            <a href="https://imgbedcdn.236668.xyz/file/rootCA.crt" download class="download-link">
+                <button>点击下载根证书文件 (.crt)</button>
+            </a>
+            <p style="margin-top: 10px; color: #666;">
+                下载后打开证书文件，系统会提示安装。
+            </p>
+        </div>
+
+        <div class="note">
+            <strong>注意事项：</strong>Windows/Linux 用户请确保以管理员或 sudo 权限运行脚本。
+        </div>
+    </div>
+</div>
+
+<script>
+// 复制命令函数
+function copyCommand() {
+    const command = 'curl -sSL https://ca.ebcn.tech/linux.sh | sudo bash';
+    const copyBtn = document.querySelector('.copy-btn');
+    
+    navigator.clipboard.writeText(command).then(() => {
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '✅ 已复制';
+        copyBtn.style.background = '#38a169';
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.style.background = '#4a5568';
+        }, 1500);
+    }).catch(() => {
+        // 如果复制失败，选中命令框内容
+        const commandBox = document.querySelector('.command-box');
+        const range = document.createRange();
+        range.selectNodeContents(commandBox);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        copyBtn.innerHTML = '请手动复制';
+        setTimeout(() => {
+            copyBtn.innerHTML = '📋 复制';
+        }, 2000);
+    });
+}
+
+// 点击命令框选中全部内容
+document.querySelector('.command-box').addEventListener('click', function() {
+    const range = document.createRange();
+    range.selectNodeContents(this);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // 显示复制提示
+    this.style.background = '#4a5568';
+    setTimeout(() => {
+        this.style.background = '#2d3748';
+    }, 200);
+});
+
+// 添加复制到剪贴板功能
+document.querySelector('.command-box').addEventListener('dblclick', function() {
+    const text = this.textContent.replace('$ ', '');
+    navigator.clipboard.writeText(text).then(() => {
+        const originalText = this.innerHTML;
+        this.innerHTML = '✅ 已复制到剪贴板！';
+        this.style.background = '#38a169';
+        setTimeout(() => {
+            this.innerHTML = originalText;
+            this.style.background = '#2d3748';
+        }, 1500);
+    }).catch(() => {
+        // 如果复制失败，至少选中文本
+        const range = document.createRange();
+        range.selectNodeContents(this);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    });
+});
+</script>
+</body>
+</html>
