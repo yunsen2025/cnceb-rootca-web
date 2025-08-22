@@ -23,6 +23,26 @@ try {
     Write-Host "根证书导入完成！" -ForegroundColor Green
     Write-Host "证书已成功安装到系统中。" -ForegroundColor Green
     
+    # 验证证书安装
+    Write-Host ""
+    Write-Host "正在验证证书安装..." -ForegroundColor Yellow
+    try {
+        $testUrl = "https://test.ca.ebcn.tech"
+        $response = Invoke-WebRequest -Uri $testUrl -TimeoutSec 10 -ErrorAction Stop
+        if ($response.StatusCode -eq 200) {
+            Write-Host "✅ 证书验证成功！HTTPS 连接正常。" -ForegroundColor Green
+        } else {
+            Write-Host "⚠️ 证书可能未正确安装，返回状态码：$($response.StatusCode)" -ForegroundColor Yellow
+        }
+    }
+    catch {
+        Write-Host "❌ 证书验证失败：$($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "可能的原因：" -ForegroundColor Yellow
+        Write-Host "  1. 测试网站暂时不可用" -ForegroundColor Gray
+        Write-Host "  2. 证书未正确安装" -ForegroundColor Gray
+        Write-Host "  3. 网络连接问题" -ForegroundColor Gray
+    }
+    
     # 清理临时文件
     if (Test-Path $tempFile) {
         Remove-Item $tempFile -Force
